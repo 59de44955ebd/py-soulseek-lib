@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Just play</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/ico">
+	<link rel="stylesheet" href="/main.css" type="text/css">
+</head>
+<body>
+<div class="main">
+
+	<input type="radio" name="page" id="btn-collection" checked><label for="btn-collection">Music collection</label>
+	<input type="radio" name="page" id="btn-search"><label for="btn-search">Search</label>
+	<input type="radio" name="page" id="btn-playlist"><label for="btn-playlist">Playlist</label>
+	<input type="radio" name="page" id="btn-mediainfos" disabled><label for="btn-mediainfos">Media Infos</label>
+
+	<div class="page" id="page-collection">
+		<div class="result" id="result-collection"></div>
+	</div>
+
+	<div class="page" id="page-search">
+		<input type="text" id="input-search" placeholder="Enter artist or album name...">
+		<div class="result" id="result-search"></div>
+	</div>
+
+	<div class="page" id="page-playlist">
+		<div class="result cm" data-cm="cm-playlist" id="playlist"></div>
+	</div>
+
+    <div class="page" id="page-mediainfos">
+    	<div class="result" id="mediainfos"></div>
+    </div>
+
+    <div id="bottom-row">
+    	<audio id="player" controls autoplay></audio>
+    	<div id="now-playing"></div>
+    </div>
+
+</div>
+
+<div class="context-menu" id="cm-song-collection">
+	<div class="item">Play file</div>
+	<div class="item">Add to Playlist</div>
+	<div class="sep"></div>
+	<div class="item">Rename file</div>
+	<div class="item">Delete file</div>
+</div>
+
+<div class="context-menu" id="cm-album-collection">
+	<div class="item">Add to Playlist</div>
+	<div class="sep"></div>
+	<div class="item">Rename folder</div>
+	<div class="item">Delete folder</div>
+</div>
+
+<div class="context-menu" id="cm-song-search">
+	<div class="item">Download song</div>
+</div>
+
+<div class="context-menu" id="cm-album-search">
+    <div class="item">Download album</div>
+</div>
+
+<div class="context-menu" id="cm-playlist">
+    <div class="item">Clear Playlist</div>
+</div>
+
+<div class="context-menu" id="cm-playlist-item">
+    <div class="item">Move Up</div>
+    <div class="item">Move Down</div>
+    <div class="sep"></div>
+    <div class="item">Remove Item</div>
+</div>
+
+<script src="/main.js"></script>
+<script src="/playlist.js"></script>
+
+</body>
+</html>
