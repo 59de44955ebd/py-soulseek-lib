@@ -102,6 +102,8 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         data = {'.':[]}
         files = sorted(os.listdir(downloads_dir))
         for f in files:
+            if f.startswith('.'):
+                continue
             if os.path.isdir(os.path.join(downloads_dir, f)):
                 data[f] = sorted(os.listdir(os.path.join(downloads_dir, f)))
             else:
