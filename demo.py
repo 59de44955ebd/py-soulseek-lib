@@ -63,16 +63,14 @@ def get_albums(results, album_filter=None, artist_filter=None):
         if not album in albums:
             albums[album] = []
         albums[album].append(song)
-
     # make sure titles inside albums are sorted
     for k,songs in albums.items():
         songs.sort(key=lambda song: song['file'])
-
     return albums
 
 
 ########################################
-#
+# Simple HTTP request handler
 ########################################
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
 
@@ -80,24 +78,15 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         super().__init__(request, client_address, server, directory=HTTP_PUBLIC_DIR)
         self.close_connection = True
 
-    ########################################
-    #
-    ########################################
     def log_message(self, format, *args):
         pass
 
-    ########################################
-    #
-    ########################################
     def _serve_json(self, data):
         self.send_response(200)
         self.send_header("Content-Type", 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
-    ########################################
-    #
-    ########################################
     def handle_list(self, params):
         data = {'.':[]}
         files = sorted(os.listdir(downloads_dir))
@@ -110,9 +99,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
                 data['.'].append(f)
         self._serve_json(data)
 
-    ########################################
-    #
-    ########################################
     def handle_search(self, params):
         token = slsk_app.search(params['s'][0].lower())
 
@@ -127,9 +113,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         albums = get_albums(slsk_app.get_and_clear_search_results(token))
         self._serve_json(albums)
 
-    ########################################
-    #
-    ########################################
     def handle_download(self, params):
         album_dir = os.path.join(downloads_dir, params['album'][0])
         mp3_file = filename(params['file'][0])
@@ -160,9 +143,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         # download timed out
         self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def handle_mediainfos(self, params):
         try:
             # convert media url to local path
@@ -171,16 +151,10 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         except:
             self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def handle_prog(self, params):
         k = params['user'][0] + ':' + params['file'][0]
         self._serve_json({'prog': download_progress[k]} if k in download_progress else {})
 
-    ########################################
-    #
-    ########################################
     def handle_rename_song(self, params):
         try:
             if params['album'][0] == '.':
@@ -192,9 +166,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         except:
             self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def handle_delete_song(self, params):
         try:
             if params['album'][0] == '.':
@@ -205,9 +176,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         except:
             self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def handle_rename_album(self, params):
         try:
             os.rename(
@@ -217,9 +185,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         except:
             self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def handle_delete_album(self, params):
         try:
             shutil.rmtree(os.path.join(downloads_dir, filename(params['album'][0])))
@@ -227,9 +192,6 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         except:
             self._serve_json({'status': False})
 
-    ########################################
-    #
-    ########################################
     def do_GET(self):
         params = parse.urlparse(self.path)
         handler = 'handle_' + params.path[1:]
@@ -242,7 +204,7 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
 
 
 ########################################
-#
+# Simple Soulseek app
 ########################################
 class MySlskApplication():
 
@@ -347,10 +309,7 @@ class MySlskApplication():
 if __name__ == '__main__':
     slsk_app = MySlskApplication()
 
-    MyHTTPRequestHandler.extensions_map.update({
-        '.js': 'application/javascript',
-    })
-
+    MyHTTPRequestHandler.extensions_map['.js'] = 'application/javascript'
     httpd = ThreadingHTTPServer((HTTP_HOST, HTTP_PORT), MyHTTPRequestHandler)
     log.add("Serving HTTP at port: %i", HTTP_PORT)
 
