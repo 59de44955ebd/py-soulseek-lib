@@ -241,7 +241,7 @@ class MySlskApplication():
         self._search_results[token] = []
         self._search_finished[token] = False
 
-    # Receives search results and saves them in dict _search_finished
+    # Receives search results and saves them in list
     def _on_show_search_result(self, msg, username):
         # Filter: ignore users with low speed or without free slots
         if self._search_finished[msg.token] or not msg.freeulslots or msg.ulspeed < MIN_SPEED:
@@ -329,3 +329,4 @@ if __name__ == '__main__':
 
     # Wait for actual termination
     slsk_thread.join()
+
